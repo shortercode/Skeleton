@@ -38,7 +38,7 @@ class Bone extends Vector {
   render (C) {
     C.beginPath(this.parent);
     C.lineTo(this);
-    C.stroke("rgba(120, 120, 120, 0.8)");
+    C.stroke("rgba(120, 120, 120, 0.4)");
     C.rect(this, 4, 4, 'black');
     for (let child of this.children)
       child.render(C);
