@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="src/Vector.js" charset="utf-8"></script>
+  <script src="src/Canvas.js" charset="utf-8"></script>
+  <script src="src/Bone.js" charset="utf-8"></script>
+  <script src="src/Body.js" charset="utf-8"></script>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    {
+      const CANVAS = new Canvas();
+      const MOUSE = new Vector();
+      const BODY = new Body(200, 200, 0);
+
+      let selectedPoint = null;
+
+      document.body.appendChild(CANVAS.element);
+
+      CANVAS.width = 400;
+      CANVAS.height = 400;
+      CANVAS.main = t => {
+        CANVAS.clear();
+        BODY.render(CANVAS);
+      };
+
+      document.onmousemove = e => {
+        MOUSE.x = e.clientX;
+        MOUSE.y = e.clientY;
+        if (selectedPoint) {
+          if (selectedPoint.pointAt) {
+            selectedPoint.pointAt(MOUSE);
+          }
+        }
+      };
+
+      document.onmousedown = e => {
+        let distance = Infinity;
+        BODY.traverse(point => {
+          const d = point.distanceToSq(MOUSE);
+          if (d < distance) {
+            distance = d;
+            selectedPoint = point;
+          }
+        });
+      };
+
+      document.onmouseup = e => {
+        selectedPoint = null;
+      };
+
+    }
+  </script>
+</body>
+</html>
