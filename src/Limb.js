@@ -1,9 +1,18 @@
 class Limb extends Vector {
   constructor (start, end, position) {
     this.position = position;
-    this.direction = new Vector();
     this.start = start;
     this.end = end;
+    
+    this.direction = new Vector();
+    // rotation from UP to Limb.direction
+    // used to calculate the absolute positions
+    // of geometry positions
+    this.rotation = new Quaternion();
+    
+    this.relativePoints = [];
+    this.absolutePoints = [];
+    
   }
   update () {
     // Delta vector a -> b
@@ -22,5 +31,21 @@ class Limb extends Vector {
         .multiplyScalar(HALF_LENGTH)
         .add(this.start);
     }
+    // recalculate rotation
+    this.rotation.fromUnitVector(this.direction, Vector.up);
+    // recalculate absolute geometry
+    for (let i = 0, l = this.relativePoints.length; i < l; i++) {
+      const REL = this.relativePoints[i];
+      const ABS = this.absolutePoints[i] || this.absolutePoints[i] = new Vector();
+      
+      ABS.copy(REL)
+        .applyQuaternion(this.rotation)
+        .add(this.position);
+    }
+    return this;
+  }
+  addPoint (v) {
+    this.relativePoints.push(v);
+    return this;
   }
 }
